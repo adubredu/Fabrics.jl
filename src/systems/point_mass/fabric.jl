@@ -8,10 +8,7 @@ function attractor_task_map(θ, env::PointMass)
 end
 
 function repeller_task_map(θ, env::PointMass)
-    o = env.o
-    r = env.r
-    x = (norm(θ - o)/r) - 1.0
-    return x
+    return θ
 end
 
 function attractor_fabric(x, ẋ, env::PointMass)
@@ -24,7 +21,17 @@ function attractor_fabric(x, ẋ, env::PointMass)
     return (M, ẍ)
 end
 
-function repeller_fabric
+function repeller_fabric(x, ẋ, env::PointMass)
+    kᵦ = 20; αᵦ = 1
+    o = env.o; r = env.r
+    x = (norm(x - o)/r) - 1.0
+    s = ẋ[1] < 0 ? 1 : 0
+    M = diagm(ones(2)*(s*kᵦ) / (x^2))
+    ψ(θ) = αᵦ / (2θ^8)
+    δx = ForwardDiff.derivative(ψ, x)
+    ẍ = -s * ẋ.^2 * δx
+    return (M, ẍ)
+end
 
 function fabric_eval(x, ẋ, name::Symbol, env::PointMass)
     M = nothing; ẍ = nothing 
