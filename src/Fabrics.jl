@@ -13,9 +13,10 @@ include("systems/point_mass/step.jl")
 include("systems/point_mass/fabric.jl")
 
 export visualize_system!,
-       step!
+       step!,
+       jvp
 
 export PointMass,
-       pointmass_fabric
+       pointmass_fabric_solve
 
 end
