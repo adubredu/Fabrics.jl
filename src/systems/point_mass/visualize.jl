@@ -1,7 +1,7 @@
 function visualize_system!(env::PointMass)
     X = env.x
     O = env.o
-    r = env.r
+    r = env.r*2
     g = env.g
 
     fig = Figure()

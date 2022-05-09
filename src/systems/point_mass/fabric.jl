@@ -8,7 +8,10 @@ function attractor_task_map(θ, env::PointMass)
 end
 
 function repeller_task_map(θ, env::PointMass)
-    return θ
+    o = env.o
+    r = env.r 
+    x = (norm(θ - o)/r) - 1.0
+    return [x]
 end
 
 function attractor_fabric(x, ẋ, env::PointMass)
@@ -22,15 +25,13 @@ function attractor_fabric(x, ẋ, env::PointMass)
 end
 
 function repeller_fabric(x, ẋ, env::PointMass)
-    kᵦ = 20; αᵦ = 1
-    o = env.o; r = env.r
-    x = (norm(x - o)/r) - 1.0
+    kᵦ = 50; αᵦ = 1 
     s = ẋ[1] < 0 ? 1 : 0
-    M = diagm(ones(2)*(s*kᵦ) / (x^2))
+    M = (s*kᵦ) / (x[1]^2)
     ψ(θ) = αᵦ / (2θ^8)
-    δx = ForwardDiff.derivative(ψ, x)
-    ẍ = -s * ẋ.^2 * δx
-    return (M, ẍ)
+    δx = ForwardDiff.derivative(ψ, x[1])
+    ẍ = -s * ẋ[1]^2 * δx
+    return (M, [ẍ])
 end
 
 function fabric_eval(x, ẋ, name::Symbol, env::PointMass)
@@ -53,7 +54,7 @@ function pointmass_fabric_solve(θ, θ̇ , env::PointMass)
         M, ẍ = fabric_eval(x, ẋ, t, env)
         push!(xₛ, x); push!(ẋₛ, ẋ); push!(cₛ, c) 
         push!(Mₛ, M); push!(ẍₛ, ẍ); push!(Jₛ, J) 
-    end  
+    end   
     Mᵣ = sum([J' * M * J for (J, M) in zip(Jₛ, Mₛ)])
     fᵣ = sum([J' * M * (ẍ - c) for (J, M, ẍ, c) in zip(Jₛ, Mₛ, ẍₛ, cₛ)])
     Mᵣ = convert(Matrix{Float64}, Mᵣ)
