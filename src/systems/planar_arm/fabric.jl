@@ -20,6 +20,10 @@ function joint_lower_limit_task_map(θ, env::PlanarArm)
     return θ-env.lb
 end
 
+function joint_upper_limit_task_map(θ, env::PlanarArm)
+    return env.ub-θ
+end
+
 function attractor_fabric(x, ẋ, env::PlanarArm)
     k = 50.0; αᵩ = 10.0; β=2.5
     m₊ = 2.0; m₋ = 0.2; αₘ = 0.75
@@ -52,8 +56,20 @@ function joint_lower_limit_fabric(x, ẋ, env::PlanarArm)
     ψ(θ) = (α₁./(θ.^2)) .+ α₂*log.(exp.(-α₃*(θ.-α₄)) .+ 1) 
     δx = ForwardDiff.jacobian(ψ, x) 
     ẍ = δx* (-s .* norm(ẋ)^2)
-    ẍ = vec(ẍ)
-    # @show ẍ
+    ẍ = vec(ẍ) 
+    return (M, ẍ)
+end
+
+function joint_upper_limit_fabric(x, ẋ, env::PlanarArm)
+    λ = 0.25
+    α₁ = 0.4; α₂ = 0.2; α₃ = 20; α₄ = 5.0
+    s = zero(ẋ)
+    for i=1:length(s) s[i] = ẋ[i] < 0.0 ? 1 : 0 end
+    M = diagm(s.*(λ./x))
+    ψ(θ) = (α₁./(θ.^2)) .+ α₂*log.(exp.(-α₃*(θ.-α₄)) .+ 1) 
+    δx = ForwardDiff.jacobian(ψ, x) 
+    ẍ = δx* (-s .* norm(ẋ)^2)
+    ẍ = vec(ẍ) 
     return (M, ẍ)
 end
 
