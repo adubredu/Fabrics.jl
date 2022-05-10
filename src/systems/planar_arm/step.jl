@@ -11,4 +11,16 @@ function step!(θ̈ ::Vector{Float64}, env::PlanarArm)
     env.θ = θ
     env.θ̇ = θ̇
 
+    if env.dynamic
+        for ob in env.obstacle_observables
+            val = collect(ob.val)
+            val[1] -= 0.0125
+            ob[] = SVector(val...)
+            if ob[][1] < -10.0
+                val[1] = 10
+                ob[] = SVector(val...)
+            end
+        end
+    end
+
 end
