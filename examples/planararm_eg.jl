@@ -2,7 +2,7 @@ using Revise
 using Fabrics
 
 object_positions = [[-2.0, 12.5]]
-goal_position = [-2.0, 5.0]
+goal_position = [-2.0, 10.0]
 init_joint_positions = [π/6,2π/3,π/2]
 obstacle_radii = 1.875 * ones(length(object_positions))
 
@@ -12,7 +12,7 @@ ax, fig = visualize_system!(env)
 θ = init_joint_positions
 θ̇ = zero(θ)
 
-for i=1:5000
+for i=1:20000
     global θ, θ̇
     ẍ = planararm_fabric_solve(θ, θ̇ , env)
     step!(ẍ, env)

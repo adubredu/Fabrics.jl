@@ -13,17 +13,19 @@ mutable struct PlanarArm
     λ::Float64
     lb::Vector{Float64}
     ub::Vector{Float64}
+    θ₀::Vector{Float64}
     link_observables 
     joint_observables 
     obstacle_observables
     task_maps
     
     function PlanarArm(robot_position, robot_velocity, obstacle_positions, obstacle_radii, goal_position)
-        task_maps = [:attractor, :repeller, :joint_lower_limit, :joint_upper_limit]
+        task_maps = [:attractor, :repeller, :joint_lower_limit, :joint_upper_limit, :default_config]
         k = 0.5
         λ = 0.7
         lb = [0.0, 0.0, 0.0]
         ub = [π, π, π]
-        new(robot_position, robot_velocity, obstacle_positions, obstacle_radii, 5.0,5.0,5.0, 10E-4, false, goal_position, k, λ, lb, ub, nothing, nothing, nothing, task_maps)
+        θ₀ = [π/2, π/2, π/2]
+        new(robot_position, robot_velocity, obstacle_positions, obstacle_radii, 5.0,5.0,5.0, 10E-4, false, goal_position, k, λ, lb, ub, θ₀, nothing, nothing, nothing, task_maps)
     end
 end

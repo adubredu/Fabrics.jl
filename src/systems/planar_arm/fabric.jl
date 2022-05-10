@@ -24,6 +24,10 @@ function joint_upper_limit_task_map(θ, env::PlanarArm)
     return env.ub-θ
 end
 
+function default_config_task_map(θ, env::PlanarArm)
+    return θ - env.θ₀
+end
+
 function attractor_fabric(x, ẋ, env::PlanarArm)
     k = 50.0; αᵩ = 10.0; β=2.5
     m₊ = 2.0; m₋ = 0.2; αₘ = 0.75
@@ -70,6 +74,15 @@ function joint_upper_limit_fabric(x, ẋ, env::PlanarArm)
     δx = ForwardDiff.jacobian(ψ, x) 
     ẍ = δx* (-s .* norm(ẋ)^2)
     ẍ = vec(ẍ) 
+    return (M, ẍ)
+end
+
+function default_config_fabric(x, ẋ, env::PlanarArm)
+    λᵪ = 0.25; k = 50.0; αᵩ = 10.0; β=2.5
+    M = λᵪ * I(length(x))
+    ψ(θ) = k * (norm(θ) + (1/αᵩ)*log(1+exp(-2αᵩ*norm(θ))))
+    δx = ForwardDiff.gradient(ψ, x)
+    ẍ = -δx - β*ẋ
     return (M, ẍ)
 end
 
