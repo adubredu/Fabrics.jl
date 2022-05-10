@@ -1,11 +1,22 @@
 using Revise
 using Fabrics
 
-object_positions = [[4.0, 2.0]]
-goal_position = [-2.0, 2.5]
+object_positions = [[-2.0, 12.5]]
+goal_position = [-2.0, 5.0]
 init_joint_positions = [π/6,2π/3,π/2]
-obstacle_radii = 1.5 * ones(length(object_positions))
+obstacle_radii = 1.875 * ones(length(object_positions))
 
 env = PlanarArm(init_joint_positions, zeros(length(init_joint_positions)), object_positions, obstacle_radii, goal_position)
-
 ax, fig = visualize_system!(env)
+
+θ = init_joint_positions
+θ̇ = zero(θ)
+
+for i=1:5000
+    global θ, θ̇
+    ẍ = planararm_fabric_solve(θ, θ̇ , env)
+    step!(ẍ, env)
+    θ = env.θ
+    θ̇ = env.θ̇
+    sleep(0.005*env.Δt)
+end

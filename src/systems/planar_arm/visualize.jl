@@ -1,4 +1,4 @@
-function link_poses(θ::Vector{Float64}, env::PlanarArm)
+function link_poses(θ, env::PlanarArm)
     l1 = env.l1
     l2 = env.l2
     l3 = env.l3
@@ -16,7 +16,7 @@ function visualize_system!(env::PlanarArm)
     obstacle_radii = env.r*2
     goal_position = env.g
     fig = Figure()
-    ax = Axis(fig[1,1], aspect=DataAspect(), limits=(-10., 10, -10.,10.))
+    ax = Axis(fig[1,1], aspect=DataAspect(), limits=(-10., 10, -1.,15.))
     obstacle_observables = []
     for (i, ob) in enumerate(obstacle_positions)  
         ox =  Observable(SVector{2,Float64}(ob...))

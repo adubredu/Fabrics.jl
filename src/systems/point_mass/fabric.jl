@@ -31,6 +31,7 @@ function repeller_fabric(x, ẋ, env::PointMass)
     ψ(θ) = αᵦ / (2θ^8)
     δx = ForwardDiff.derivative(ψ, x[1])
     ẍ = -s * ẋ[1]^2 * δx
+    @show (M, [ẍ])
     return (M, [ẍ])
 end
 

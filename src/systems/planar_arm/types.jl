@@ -9,11 +9,21 @@ mutable struct PlanarArm
     Δt::Float64
     show_contacts::Bool 
     g::Vector{Float64}
+    k::Float64
+    λ::Float64
+    lb::Vector{Float64}
+    ub::Vector{Float64}
     link_observables 
     joint_observables 
     obstacle_observables
+    task_maps
     
     function PlanarArm(robot_position, robot_velocity, obstacle_positions, obstacle_radii, goal_position)
-        new(robot_position, robot_velocity, obstacle_positions, obstacle_radii, 2.5, 2.5, 2.5, 10E-4, false, goal_position, nothing, nothing, nothing)
+        task_maps = [:attractor, :repeller, :joint_lower_limit]
+        k = 0.5
+        λ = 0.7
+        lb = [0.0, 0.0, 0.0]
+        ub = [π, π, π]
+        new(robot_position, robot_velocity, obstacle_positions, obstacle_radii, 5.0,5.0,5.0, 10E-4, false, goal_position, k, λ, lb, ub, nothing, nothing, nothing, task_maps)
     end
 end

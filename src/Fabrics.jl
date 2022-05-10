@@ -24,6 +24,8 @@ export visualize_system!,
 export PointMass,
        pointmass_fabric_solve
 
-export PlanarArm
+export PlanarArm,
+       link_poses,
+       planararm_fabric_solve
 
 end
