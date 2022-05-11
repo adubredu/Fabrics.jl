@@ -1,5 +1,5 @@
 # foot as reference
-function link_poses(θ::Vector{Float64}, env::PickleRick)
+function link_poses(θ, env::PickleRick)
     l1 = env.l1
     l2 = env.l2
     l3 = env.l3

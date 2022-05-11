@@ -6,12 +6,30 @@ function repeller_task_map(θ, env::PickleRick)
     lh = chains[5][end]; rh = chains[4][end]
     lf = chains[1][end]; rf = chains[2][end]
     hd = chains[3][end]
-    kp = [hd, lh, rh, lf, rf]
+    kp = [lh, rh, hd]#[hd, lh, rh, lf, rf]
     for k in kp 
         Δ = (norm(k - o.val)/r)[1] - 1.0
         push!(xs, Δ)
     end
     return xs
+end
+
+function default_config_task_map(θ, env::PickleRick)
+    return θ - env.θᵣ
+end
+
+function lefthand_attractor_task_map(θ, env::PickleRick)
+    x₉ = env.g
+    chains = link_poses(θ, env)
+    xh = chains[5][end]
+    return xh - x₉
+end
+
+function righthand_attractor_task_map(θ, env::PickleRick)
+    x₉ = env.g
+    chains = link_poses(θ, env)
+    xh = chains[4][end]
+    return xh - x₉
 end
 
 function repeller_fabric(x, ẋ, env::PickleRick)
@@ -21,11 +39,48 @@ function repeller_fabric(x, ẋ, env::PickleRick)
     M = diagm((s*kᵦ) ./ (x.^2))
     ψ(θ) = αᵦ ./ (2θ.^8) 
     x = convert(Vector{Float64}, x)
+    # @show size(x)
     δx = ForwardDiff.jacobian(ψ, x) 
+    # @show (δx)
+    δx = diag(δx)
     ẍ = -s .* norm(ẋ)^2 .* δx  
     ẍ = vec(ẍ)
+    # @show size(ẍ)
     return (M, ẍ)
 end
+
+#dance: 1000 2.5
+#stable dodge: 1500 20.5
+#reach: 300 5.5
+function default_config_fabric(x, ẋ, env::PickleRick) #1500 20.5 #1000 2.5
+    λᵪ = 0.25; k = 30.0; αᵩ = 10.0; β=50.5
+    M = λᵪ * I(length(x))
+    ψ(θ) = k * (norm(θ) + (1/αᵩ)*log(1+exp(-2αᵩ*norm(θ))))
+    δx = ForwardDiff.gradient(ψ, x)
+    ẍ = -δx - β*ẋ
+    return (M, ẍ)
+end
+
+function lefthand_attractor_fabric(x, ẋ, env::PickleRick)
+    k = 50.0; αᵩ = 10.0; β=2.5
+    m₊ = 2.0; m₋ = 0.2; αₘ = 0.75
+    ψ(θ) = k * (norm(θ) + (1/αᵩ)*log(1+exp(-2αᵩ*norm(θ))))
+    δx = ForwardDiff.gradient(ψ, x)
+    ẍ = -δx - β*ẋ
+    M = (m₊ - m₋) * exp(-(αₘ*norm(x))^2) * I(2) + m₋*I(2)
+    return (M, ẍ)
+end
+
+function righthand_attractor_fabric(x, ẋ, env::PickleRick)
+    k = 50.0; αᵩ = 10.0; β=2.5
+    m₊ = 2.0; m₋ = 0.2; αₘ = 0.75
+    ψ(θ) = k * (norm(θ) + (1/αᵩ)*log(1+exp(-2αᵩ*norm(θ))))
+    δx = ForwardDiff.gradient(ψ, x)
+    ẍ = -δx - β*ẋ
+    M = (m₊ - m₋) * exp(-(αₘ*norm(x))^2) * I(2) + m₋*I(2)
+    return (M, ẍ)
+end
+
 
 function fabric_eval(x, ẋ, name::Symbol, env::PickleRick)
     M = nothing; ẍ = nothing 
@@ -35,7 +90,7 @@ function fabric_eval(x, ẋ, name::Symbol, env::PickleRick)
     return (M, ẍ)
 end
 
-function planararm_fabric_solve(θ, θ̇ , env::PickleRick)
+function picklerick_fabric_solve(θ, θ̇ , env::PickleRick)
     xₛ = []; ẋₛ = []; cₛ = []
     Mₛ = []; ẍₛ = []; Jₛ = []
     for t in env.task_maps

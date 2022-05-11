@@ -18,7 +18,7 @@ function step!(θ̈ ::Vector{Float64}, env::PickleRick)
     if env.dynamic
         for ob in env.obstacle_observables
             val = collect(ob.val)
-            val[1] -= 0.0125
+            val[1] -= 0.00625
             ob[] = SVector(val...)
             if ob[][1] < -10.0
                 val[1] = 10
