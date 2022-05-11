@@ -1,0 +1,14 @@
+Header header
+float32 kp_hiproll
+float32 kp_hipyaw
+float32 kp_hippitch
+float32 kp_knee
+float32 kp_toe
+float32 kp_shoulderroll
+float32 kp_shoulderpitch
+float32 kp_shoulderyaw
+float32 kp_elbow
+float32 kp_lat
+float32 kd_lat
+float32 kp_knee_comp
+float32 kd_knee_comp

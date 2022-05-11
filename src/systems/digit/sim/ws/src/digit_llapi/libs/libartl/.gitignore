@@ -1,0 +1,7 @@
+*.so
+*.a
+*.o
+*.dll
+*.lib
+*.log
+*_test

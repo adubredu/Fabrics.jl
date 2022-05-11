@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./src/systems/digit/sim/ws/devel/lib/python2.7/dist-packages"
+    ]
+}
