@@ -7,10 +7,10 @@ end
 function repeller_task_map(θ, env::PlanarArm)
     # os = env.o
     os = env.obstacle_observables
-    r = env.r 
+    rs = env.r 
     _,_,x = link_poses(θ, env) 
     xs = []
-    for o in os 
+    for (o,r) in zip(os, rs)
         Δ =  (norm(x - o.val)/r)[1] - 1.0
         push!(xs, Δ)
     end

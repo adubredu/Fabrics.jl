@@ -21,7 +21,7 @@ mutable struct PlanarArm
     task_maps
     
     function PlanarArm(robot_position, robot_velocity, obstacle_positions, obstacle_radii, goal_position)
-        task_maps = [ :repeller, :joint_lower_limit, :joint_upper_limit, :default_config]
+        task_maps = [:attractor, :repeller, :joint_lower_limit, :joint_upper_limit, :default_config]
         k = 0.5
         λ = 0.7
         lb = [0.0, 0.0, 0.0]

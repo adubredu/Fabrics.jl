@@ -17,6 +17,11 @@ include("systems/planar_arm/visualize.jl")
 include("systems/planar_arm/step.jl")
 include("systems/planar_arm/fabric.jl")
 
+include("systems/picklerick/types.jl")
+include("systems/picklerick/visualize.jl")
+include("systems/picklerick/step.jl")
+include("systems/picklerick/fabric.jl")
+
 export visualize_system!,
        step!,
        jvp
@@ -28,4 +33,6 @@ export PlanarArm,
        link_poses,
        planararm_fabric_solve
 
+export PickleRick,
+       picklerick_fabric_solve
 end
