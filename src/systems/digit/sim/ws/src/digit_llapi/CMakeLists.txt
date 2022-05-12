@@ -57,8 +57,16 @@ add_executable(main_llapi
   ${CMAKE_CURRENT_SOURCE_DIR}/src/Digit_Llapi.cpp
 )
 
+add_executable(main_srv_llapi
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/main_srv_llapi.cpp
+)
+
 target_include_directories(main_llapi PUBLIC 
   ${CMAKE_CURRENT_SOURCE_DIR}/include/digit_llapi
+  ${CMAKE_CURRENT_SOURCE_DIR}/libs
+)
+
+target_include_directories(main_srv_llapi PUBLIC  
   ${CMAKE_CURRENT_SOURCE_DIR}/libs
 )
 
@@ -67,7 +75,17 @@ add_dependencies(main_llapi
   ${cpp_python_EXPORTED_TARGETS}
 )
 
+add_dependencies(main_srv_llapi 
+  ${catkin_EXPORTED_TARGETS} 
+  ${cpp_python_EXPORTED_TARGETS}
+)
+
 target_link_libraries(main_llapi 
+  llapi
+  ${catkin_LIBRARIES}
+)
+
+target_link_libraries(main_srv_llapi 
   llapi
   ${catkin_LIBRARIES}
 )

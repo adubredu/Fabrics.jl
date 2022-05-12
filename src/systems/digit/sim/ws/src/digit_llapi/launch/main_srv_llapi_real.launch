@@ -1,0 +1,3 @@
+<launch>
+    <node name="digit_srv_llapi_node" pkg="digit_llapi" type="main_srv_llapi" args="real" output="screen" cwd="node"> </node>
+</launch>

@@ -1,0 +1,3 @@
+digit_msgs/Digit_Commands cmd
+---
+std_msgs/Bool status

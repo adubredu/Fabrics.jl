@@ -22,11 +22,17 @@ add_message_files(
   Digit_Observation.msg
   Digit_Commands.msg)
 
+add_service_files(
+  FILES 
+  Digit_Observation_srv.srv 
+  Digit_Commands_srv.srv
+)
+
 ## Generate added messages and services with any dependencies listed here
 generate_messages(
   DEPENDENCIES
   std_msgs
-  geometry_msgs
+  geometry_msgs 
 )
 
 catkin_package(

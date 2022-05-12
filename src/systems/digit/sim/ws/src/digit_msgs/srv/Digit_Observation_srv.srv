@@ -1,0 +1,3 @@
+std_msgs/Bool req
+---
+digit_msgs/Digit_Observation obs
