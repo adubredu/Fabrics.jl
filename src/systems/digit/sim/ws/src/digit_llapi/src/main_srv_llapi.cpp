@@ -22,7 +22,7 @@ digit_msgs::Digit_Commands_srv::Response &res)
     command.fallback_opmode = req.cmd.fallback_opmode;
     command.apply_command = req.cmd.apply_command;
     llapi_send_command(&command);
-    res.status.data = true;
+    res.status.data = true; 
     return true;
 }
 
@@ -64,8 +64,7 @@ bool observation_server(digit_msgs::Digit_Observation_srv::Request &req, digit_m
     /* Motor Limits */
     std::copy(std::begin(limits->torque_limit), std::end(limits->torque_limit), std::begin(res.obs.motor_limit_torque));
     std::copy(std::begin(limits->damping_limit), std::end(limits->damping_limit), std::begin(res.obs.motor_limit_damping));
-    std::copy(std::begin(limits->velocity_limit), std::end(limits->velocity_limit), std::begin(res.obs.motor_limit_velocity));
-    std::cout << "AFTER LIMITS\n";
+    std::copy(std::begin(limits->velocity_limit), std::end(limits->velocity_limit), std::begin(res.obs.motor_limit_velocity)); 
     res.status.data = true;
     return true;
 }
@@ -73,7 +72,7 @@ bool observation_server(digit_msgs::Digit_Observation_srv::Request &req, digit_m
 int main(int argc, char *argv[])
 {
     ros::init(argc, argv, "llapi_server");
-    ros::NodeHandle n("~");
+    ros::NodeHandle n;
 
     /* The publisher address should be changed to the ip address of the robot */
     if (std::string(argv[1]) == "real")
