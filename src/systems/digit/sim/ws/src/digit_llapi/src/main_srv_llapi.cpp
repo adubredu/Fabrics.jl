@@ -22,7 +22,7 @@ digit_msgs::Digit_Commands_srv::Response &res)
     command.fallback_opmode = req.cmd.fallback_opmode;
     command.apply_command = req.cmd.apply_command;
     llapi_send_command(&command);
-    res.status.data = true; 
+    res.status.data = true;  
     return true;
 }
 

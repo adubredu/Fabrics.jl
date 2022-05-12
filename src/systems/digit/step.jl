@@ -1,58 +1,61 @@
-# using PyCall 
-# rospy = pyimport("rospy")
-# Cmd = pyimport("cmd")
+using PyCall
+py"""
+import time 
+import rospy
+import sys 
+sys.path.append("src/systems/digit/sim/ws/devel/lib/python2.7/dist-packages")
+from digit_msgs.msg import Digit_Observation, Digit_Commands
+from digit_msgs.srv import *
+"""
 
-# obs = Cmd.MyNumpy()
-# for i=1:10
-#     @show keys(obs)
-#     sleep(0.5)
-# # end
-# py"""
-# import rospy
-# import sys 
-# sys.path.append("/home/alphonsus/research/projects/Fabrics/src/systems/digit/sim/ws/devel/lib/python2.7/dist-packages")
-# from digit_msgs.msg import Digit_Observation, Digit_Commands 
-
-# class Cmd:
-#     def __init__(self):
-#         rospy.init_node("cmd_node")
-#         self.obs = None
-#         rospy.Subscriber("/observation", Digit_Observation, self.obs_callback)
-#         rospy.spin()
-    
-#     def obs_callback(self, data):
-#         self.obs = data
-#         print(data.time)
-# """
-
-# Cmd = py"Cmd"
-# cmd = Cmd()
-# # sleep(2)
-# for i=1:1000
-#     try
-#     @show cmd.obs
-#     sleep(0.5)
-#     catch 
-#     end
-# end
-
-using RobotOS 
-@rosimport digit_msgs.msg: Digit_Observation, Digit_Commands 
-rostypegen()
-using .digit_msgs.msg 
-
-env = Digit_Observation[]
-
-function callback(msg::Digit_Observation, env)
-    push!(env, msg)
-    println("got it")
+function init_server()
+    py"""
+    rospy.init_node("comms")
+    """
 end
-callback(Digit_Observation(), env)
-const sub = Subscriber("/observation", Digit_Observation, callback, (env,), queue_size=10)
-rossleep(Duration(3.0))
 
+function get_observation()
+    py"""
+    def get_observation():
+        try:
+            channel =  rospy.ServiceProxy("/observation_service", Digit_Observation_srv)
+            send_request = Digit_Observation_srvRequest()
+            send_request.req.data = True 
+
+            response = channel(send_request)
+            if response.status:
+                return response.obs
+            else:
+                return None
+        except rospy.ServiceException as e:
+            print(e)
+            return None
+    """
+    obs = py"get_observation"()
+    return obs
+end
+
+function send_command(fallback_opmode::Int64, apply_command::Bool,
+        motor_torque::Vector{Float64}, motor_velocity::Vector{Float64},
+        motor_damping::Vector{Float64})
+    py"""
+    try:
+        channel = rospy.ServiceProxy("/command_service", Digit_Commands_srv)
+        send_request = Digit_Commands_srvRequest()
+        send_request.cmd.fallback_opmode=$fallback_opmode
+        send_request.cmd.apply_command = $apply_command
+        send_request.cmd.motor_torque = $motor_torque
+        send_request.cmd.motor_velocity = $motor_velocity
+        send_request.cmd.motor_damping = $motor_damping
+        response = channel(send_request) 
+    except rospy.ServiceException as e:
+        print(e)
+
+    """
+end
+ 
+init_server()
 for i=1:10
-    @show env[1].joint_position
-    @show length(env)
-    sleep(0.5)
+    send_command(i, true, ones(20), ones(20), ones(20))
+    sleep(1.0/300.0)
 end

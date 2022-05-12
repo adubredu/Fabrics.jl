@@ -6,6 +6,7 @@ using ForwardDiff
 using LinearAlgebra
 using StaticArrays
 using Colors
+using PyCall
 
 include("systems/point_mass/types.jl")
 include("systems/point_mass/visualize.jl")
@@ -22,6 +23,10 @@ include("systems/picklerick/visualize.jl")
 include("systems/picklerick/step.jl")
 include("systems/picklerick/fabric.jl")
 
+include("systems/digit/types.jl")
+include("systems/digit/step.jl")
+inlude("systems/digit/fabric.jl")
+
 export visualize_system!,
        step!,
        jvp
@@ -35,4 +40,7 @@ export PlanarArm,
 
 export PickleRick,
        picklerick_fabric_solve
+
+export Digit, 
+       digit_fabric_solve
 end
