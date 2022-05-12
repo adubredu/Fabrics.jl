@@ -6,10 +6,13 @@
 #include "digit_msgs/Digit_Commands_srv.h"
 #include "digit_msgs/Digit_Observation_srv.h"
 
+llapi_command_t command = {0};
+llapi_observation_t observation;
+const llapi_limits_t *limits; 
+
 bool command_server(digit_msgs::Digit_Commands_srv::Request &req,
 digit_msgs::Digit_Commands_srv::Response &res)
 {
-    llapi_command_t command; 
     for (int i=0; i < NUM_MOTORS; i++)
     {
         command.motors[i].torque = req.cmd.motor_torque[i];
@@ -25,8 +28,6 @@ digit_msgs::Digit_Commands_srv::Response &res)
 
 bool observation_server(digit_msgs::Digit_Observation_srv::Request &req, digit_msgs::Digit_Observation_srv::Response &res)
 {
-    llapi_observation_t observation;
-    const llapi_limits_t *limits = llapi_get_limits();
     int ret_val = llapi_get_observation(&observation);
 
     res.obs.time = observation.time;
@@ -64,12 +65,16 @@ bool observation_server(digit_msgs::Digit_Observation_srv::Request &req, digit_m
     std::copy(std::begin(limits->torque_limit), std::end(limits->torque_limit), std::begin(res.obs.motor_limit_torque));
     std::copy(std::begin(limits->damping_limit), std::end(limits->damping_limit), std::begin(res.obs.motor_limit_damping));
     std::copy(std::begin(limits->velocity_limit), std::end(limits->velocity_limit), std::begin(res.obs.motor_limit_velocity));
-
+    std::cout << "AFTER LIMITS\n";
+    res.status.data = true;
     return true;
 }
 
 int main(int argc, char *argv[])
 {
+    ros::init(argc, argv, "llapi_server");
+    ros::NodeHandle n("~");
+
     /* The publisher address should be changed to the ip address of the robot */
     if (std::string(argv[1]) == "real")
     {
@@ -82,9 +87,6 @@ int main(int argc, char *argv[])
         llapi_init(publisher_address);
     }
 
- 
-    llapi_command_t command = {0};
-    llapi_observation_t observation; 
     command.apply_command = false;
     while (!llapi_get_observation(&observation))
     {
@@ -92,9 +94,10 @@ int main(int argc, char *argv[])
     }
     std::cout << "=========== Connected ===========\n\n";
 
+    limits = llapi_get_limits();
 
-    ros::init(argc, argv, "llapi_server");
-    ros::NodeHandle n;
+
+    
 
     ros::ServiceServer obs_service = n.advertiseService("observation_service", observation_server);
     ros::ServiceServer cmd_service = n.advertiseService("command_service", command_server);
