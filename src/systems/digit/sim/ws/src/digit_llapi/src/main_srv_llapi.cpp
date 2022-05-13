@@ -65,8 +65,7 @@ bool observation_server(digit_msgs::Digit_Observation_srv::Request &req, digit_m
     std::copy(std::begin(limits->torque_limit), std::end(limits->torque_limit), std::begin(res.obs.motor_limit_torque));
     std::copy(std::begin(limits->damping_limit), std::end(limits->damping_limit), std::begin(res.obs.motor_limit_damping));
     std::copy(std::begin(limits->velocity_limit), std::end(limits->velocity_limit), std::begin(res.obs.motor_limit_velocity)); 
-    res.status.data = true;
-    std::cout << "sent observation\n";
+    res.status.data = true; 
     return true;
 }
 
