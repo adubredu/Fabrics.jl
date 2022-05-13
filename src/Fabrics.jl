@@ -25,7 +25,7 @@ include("systems/picklerick/fabric.jl")
 
 include("systems/digit/types.jl")
 include("systems/digit/step.jl")
-inlude("systems/digit/fabric.jl")
+include("systems/digit/fabric.jl")
 
 export visualize_system!,
        step!,
@@ -42,5 +42,9 @@ export PickleRick,
        picklerick_fabric_solve
 
 export Digit, 
-       digit_fabric_solve
+       digit_fabric_solve,
+       init_digit_server,
+       get_observation,
+       send_command
+
 end

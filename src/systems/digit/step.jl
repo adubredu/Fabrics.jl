@@ -1,4 +1,3 @@
-using PyCall
 py"""
 import time 
 import rospy
@@ -8,7 +7,7 @@ from digit_msgs.msg import Digit_Observation, Digit_Commands
 from digit_msgs.srv import *
 """
 
-function init_server()
+function init_digit_server()
     py"""
     rospy.init_node("comms")
     """
@@ -54,8 +53,15 @@ function send_command(fallback_opmode::Int64, apply_command::Bool,
     """
 end
  
-init_server()
-for i=1:10
-    send_command(i, true, ones(20), ones(20), ones(20))
-    sleep(1.0/300.0)
+function step!(θ̈ ::Vector{Float64}, env::Digit)
+
 end
+
+
+
+
+# init_digit_server()
+# for i=1:10
+#     send_command(i, true, ones(20), ones(20), ones(20))
+#     sleep(1.0/300.0)
+# end

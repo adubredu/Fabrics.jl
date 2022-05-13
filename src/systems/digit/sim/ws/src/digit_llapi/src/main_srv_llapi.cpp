@@ -21,7 +21,7 @@ digit_msgs::Digit_Commands_srv::Response &res)
     }
     command.fallback_opmode = req.cmd.fallback_opmode;
     command.apply_command = req.cmd.apply_command;
-    llapi_send_command(&command);
+    // llapi_send_command(&command);
     res.status.data = true;  
     return true;
 }
@@ -66,6 +66,7 @@ bool observation_server(digit_msgs::Digit_Observation_srv::Request &req, digit_m
     std::copy(std::begin(limits->damping_limit), std::end(limits->damping_limit), std::begin(res.obs.motor_limit_damping));
     std::copy(std::begin(limits->velocity_limit), std::end(limits->velocity_limit), std::begin(res.obs.motor_limit_velocity)); 
     res.status.data = true;
+    std::cout << "sent observation\n";
     return true;
 }
 
@@ -73,6 +74,7 @@ int main(int argc, char *argv[])
 {
     ros::init(argc, argv, "llapi_server");
     ros::NodeHandle n;
+    ros::Rate ros_rate(1000);
 
     /* The publisher address should be changed to the ip address of the robot */
     if (std::string(argv[1]) == "real")
@@ -102,7 +104,13 @@ int main(int argc, char *argv[])
     ros::ServiceServer cmd_service = n.advertiseService("command_service", command_server);
 
     ROS_INFO("llapi server is ready.");
-    ros::spin();
+    // ros::spin();
+    while (ros::ok())
+    {
+        llapi_send_command(&command);
+        ros::spinOnce();
+        ros_rate.sleep();
+    }
 
     return EXIT_SUCCESS;
 }
