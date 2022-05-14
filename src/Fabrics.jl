@@ -7,6 +7,7 @@ using LinearAlgebra
 using StaticArrays
 using Colors
 using PyCall
+using Dojo 
 
 include("systems/point_mass/types.jl")
 include("systems/point_mass/visualize.jl")
@@ -24,6 +25,7 @@ include("systems/picklerick/step.jl")
 include("systems/picklerick/fabric.jl")
 
 include("systems/digit/types.jl")
+include("systems/digit/visualize.jl")
 include("systems/digit/step.jl")
 include("systems/digit/fabric.jl")
 
@@ -46,6 +48,7 @@ export Digit,
        digit_fabric_solve,
        init_digit_server,
        get_observation,
-       send_command
+       send_command,
+       mirror_joint_configurations!
 
 end

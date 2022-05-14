@@ -53,7 +53,16 @@ function send_command(fallback_opmode::Int64, apply_command::Bool,
     """
 end
  
+function step!(env::Digit)
+    Dojo.set_robot(env.vis, env.mechanism, Dojo.get_maximal_state(env.mechanism))
+end
+
+
 function step!(θ̈ ::Vector{Float64}, env::Digit)
+    observation = get_observation()
+    mirror_joint_configurations!(observation, env)
+    step!(env)
+    
 
 end
 
