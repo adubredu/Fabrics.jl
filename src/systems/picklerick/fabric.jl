@@ -2,11 +2,11 @@ function repeller_task_map(θ, env::PickleRick)
     os = env.obstacle_observables
     rs = env.r
     chains = link_poses(θ, env)
-    xs = []; o = os[1]; r = rs[1]
+    xs = []; o = os[1]; r = 2*rs[1]
     lh = chains[5][end]; rh = chains[4][end]
     lf = chains[1][end]; rf = chains[2][end]
-    hd = chains[3][end]
-    kp = [lh, rh, hd]#[hd, lh, rh, lf, rf]
+    hd = chains[3][end]; nk = chains[6][1]
+    kp = [lh, rh, hd, nk]#[hd, lh, rh, lf, rf]
     for k in kp 
         Δ = (norm(k - o.val)/r)[1] - 1.0
         push!(xs, Δ)
@@ -32,6 +32,16 @@ function righthand_attractor_task_map(θ, env::PickleRick)
     return xh - x₉
 end
 
+function lbalance_task_map(θ, env::PickleRick)
+    com = compute_COM(θ, env)
+    return [com[1] - (-env.w)]
+end
+
+function rbalance_task_map(θ, env::PickleRick)
+    com = compute_COM(θ, env)
+    return [env.w - com[1]]
+end
+
 function repeller_fabric(x, ẋ, env::PickleRick)
     kᵦ = 50; αᵦ = 1.0 
     s = zero(ẋ)
@@ -51,9 +61,9 @@ end
 
 #dance: 1000 2.5
 #stable dodge: 1500 20.5
-#reach: 300 5.5
-function default_config_fabric(x, ẋ, env::PickleRick) #1500 20.5 #1000 2.5
-    λᵪ = 0.25; k = 30.0; αᵩ = 10.0; β=50.5
+#reach: 300 5.5 | 30 50.5
+function default_config_fabric(x, ẋ, env::PickleRick) 
+    λᵪ = 0.25; k = 1500.0; αᵩ = 10.0; β=20.5
     M = λᵪ * I(length(x))
     ψ(θ) = k * (norm(θ) + (1/αᵩ)*log(1+exp(-2αᵩ*norm(θ))))
     δx = ForwardDiff.gradient(ψ, x)
@@ -81,6 +91,31 @@ function righthand_attractor_fabric(x, ẋ, env::PickleRick)
     return (M, ẍ)
 end
 
+function lbalance_fabric(x, ẋ, env::PickleRick)
+    λ = 0.25
+    α₁ = 0.4; α₂ = 0.2; α₃ = 20; α₄ = 5.0
+    s = zero(ẋ)
+    for i=1:length(s) s[i] = ẋ[i] < 0.0 ? 1 : 0 end
+    M = diagm(s.*(λ./x))
+    ψ(θ) = (α₁./(θ.^2)) .+ α₂*log.(exp.(-α₃*(θ.-α₄)) .+ 1) 
+    δx = ForwardDiff.jacobian(ψ, x) 
+    ẍ = δx* (-s .* norm(ẋ)^2)
+    ẍ = vec(ẍ) 
+    return (M, ẍ)
+end
+
+function rbalance_fabric(x, ẋ, env::PickleRick)
+    λ = 0.25
+    α₁ = 0.4; α₂ = 0.2; α₃ = 20; α₄ = 5.0
+    s = zero(ẋ)
+    for i=1:length(s) s[i] = ẋ[i] < 0.0 ? 1 : 0 end
+    M = diagm(s.*(λ./x))
+    ψ(θ) = (α₁./(θ.^2)) .+ α₂*log.(exp.(-α₃*(θ.-α₄)) .+ 1) 
+    δx = ForwardDiff.jacobian(ψ, x) 
+    ẍ = δx* (-s .* norm(ẋ)^2)
+    ẍ = vec(ẍ) 
+    return (M, ẍ)
+end
 
 function fabric_eval(x, ẋ, name::Symbol, env::PickleRick)
     M = nothing; ẍ = nothing 

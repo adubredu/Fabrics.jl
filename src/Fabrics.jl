@@ -29,7 +29,8 @@ include("systems/digit/fabric.jl")
 
 export visualize_system!,
        step!,
-       jvp
+       jvp,
+       compute_COM
 
 export PointMass,
        pointmass_fabric_solve

@@ -12,6 +12,9 @@ function step!(θ̈ ::Vector{Float64}, env::PickleRick)
     env.body_observables[5][] = [SVector(a[1], a[2]) for a in chains[5]]
     env.body_observables[6][] = [SVector(chains[3][3][1], chains[3][3][2])]
 
+    com = compute_COM(θ, env)
+    env.com_observable[] = SVector(com[1],com[2])
+
     env.θ = θ
     env.θ̇ = θ̇
 
