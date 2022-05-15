@@ -27,18 +27,20 @@ function mirror_joint_configurations!(observation, env::Digit)
         joint = get_joint(env.mechanism, jn)
         if jn in motor_names
             set_minimal_coordinates!(env.mechanism, joint, [motor_position[env.motorID[jn]]])
-            set_minimal_velocities!(env.mechanism, joint, [motor_velocity[env.motorID[jn]]])
+            # set_minimal_velocities!(env.mechanism, joint, [motor_velocity[env.motorID[jn]]])
             
-        else
+        elseif jn in joint_names
             set_minimal_coordinates!(env.mechanism, joint, [joint_position[env.jointID[jn]]])
-            set_minimal_velocities!(env.mechanism, joint, [joint_velocity[env.jointID[jn]]])
+            # set_minimal_velocities!(env.mechanism, joint, [joint_velocity[env.jointID[jn]]])
+        else 
+            @show jn
         end
     end
     t = floating_translation
     o = floating_orientation
-    set_minimal_coordinates!(env.mechanism, get_joint(env.mechanism, :auto_generated_floating_joint), [t[1]; t[2]; t[3]; o[1]; o[2]; o[3]])
+    set_minimal_coordinates!(env.mechanism, get_joint(env.mechanism, :auto_generated_floating_joint), [t[1]; t[2]; t[3]-0.25; o[1]; o[2]; o[3]])
 
     t = floating_linear_velocity
     o = floating_angular_velocity
-    set_minimal_velocities!(env.mechanism, get_joint(env.mechanism, :auto_generated_floating_joint), [t[1]; t[2]; t[3]; o[1]; o[2]; o[3]])
+    # set_minimal_velocities!(env.mechanism, get_joint(env.mechanism, :auto_generated_floating_joint), [t[1]; t[2]; t[3]; o[1]; o[2]; o[3]])
 end

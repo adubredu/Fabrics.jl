@@ -31,17 +31,17 @@ end
 
 function initialize_digit!(mechanism::Mechanism;
     model_type=:simple,
-    body_position=[0.0, 0.0, 0.2],
+    body_position=[0.0, 0.0, 0.0],
     body_orientation=[0.0, 0.0, 0.0]) where T
     body_position +=  [0.0, 0.0, 0.9385]
     try
         set_minimal_coordinates!(mechanism, get_joint(mechanism, :auto_generated_floating_joint), [body_position; body_orientation])
-        set_minimal_coordinates!(mechanism, get_joint(mechanism, :hip_abduction_left), [0.337])
-        set_minimal_coordinates!(mechanism, get_joint(mechanism, :hip_abduction_right), [-0.337])
-        set_minimal_coordinates!(mechanism, get_joint(mechanism, :toe_pitch_joint_left), [-0.126])
-        set_minimal_coordinates!(mechanism, get_joint(mechanism, :toe_pitch_joint_right), [0.126])
-        set_minimal_coordinates!(mechanism, get_joint(mechanism, :shoulder_pitch_joint_left), [0.463])
-        set_minimal_coordinates!(mechanism, get_joint(mechanism, :shoulder_pitch_joint_right), [-0.463])
+        set_minimal_coordinates!(mechanism, get_joint(mechanism, :LeftHipRoll), [0.337])
+        set_minimal_coordinates!(mechanism, get_joint(mechanism, :RightHipRoll), [-0.337])
+        set_minimal_coordinates!(mechanism, get_joint(mechanism, :LeftToePitch), [-0.126])
+        set_minimal_coordinates!(mechanism, get_joint(mechanism, :RightToePitch), [0.126])
+        set_minimal_coordinates!(mechanism, get_joint(mechanism, :LeftShoulderPitch), [0.463])
+        set_minimal_coordinates!(mechanism, get_joint(mechanism, :RightShoulderPitch), [-0.463])
     catch
         println("cannot set init configuration")
         nothing

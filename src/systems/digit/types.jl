@@ -1,18 +1,19 @@
-mutable struct Digit 
-    θ::Vector{Float64}
-    θ̇ ::Vector{Float64}
+mutable struct Digit  
     o::Vector{Vector{Float64}}
     r::Vector{Float64}
     dynamic::Bool 
     g::Vector{Float64}
     task_maps::Vector{Symbol}
     Δt::Float64 
-    vis::Visualizer 
+    vis 
     mechanism
     motorID::Dict{Symbol, Int64}
     jointID::Dict{Symbol, Int64}
 
-    function Digit(θ::Vector{Float64}, θ̇ ::Vector{Float64}, g::Vector{Float64}, o::Vector{Vector{Float64}}, r::Vector{Float64})
+    function Digit()
+        g = zeros(2)
+        o = [zeros(2)]
+        r = zeros(2)
         Δt = 10E-4
         task_maps = [:default_config]
         motorID = Dict(
@@ -48,7 +49,7 @@ mutable struct Digit
             :RightToePitch => 8,
             :RightToeRoll => 9
         )
-        new(θ, θ̇, o, r, false, g, task_maps, Δt, nothing, nothing, motorID, 
+        new(o, r, false, g, task_maps, Δt, nothing, nothing, motorID, 
         jointID)
     end
 end

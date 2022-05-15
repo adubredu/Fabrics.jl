@@ -8,7 +8,7 @@ using StaticArrays
 using Colors
 using PyCall
 using Dojo 
-
+ENV["PYTHON"]="/home/alphonsus/anaconda3/envs/digit/bin/python"
 include("systems/point_mass/types.jl")
 include("systems/point_mass/visualize.jl")
 include("systems/point_mass/step.jl")
@@ -28,6 +28,7 @@ include("systems/digit/types.jl")
 include("systems/digit/visualize.jl")
 include("systems/digit/step.jl")
 include("systems/digit/fabric.jl")
+include("systems/digit/visualization/initialize.jl")
 
 export visualize_system!,
        step!,
@@ -49,6 +50,8 @@ export Digit,
        init_digit_server,
        get_observation,
        send_command,
-       mirror_joint_configurations!
+       mirror_joint_configurations!,
+       get_digit,
+       initialize_digit!
 
 end
