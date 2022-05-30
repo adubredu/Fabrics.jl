@@ -1,4 +1,4 @@
 /Manifest.toml 
-src/systems/digit
+src/systems/digit/
 examples/digit_eg.jl
-examples/digitStandingtrler_eg.jl
+examples/digitStandingCtrler_eg.jl
