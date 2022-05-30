@@ -1,4 +1,4 @@
-/Manifest.toml
-src/systems/digit/sim/ws/build
-src/systems/digit/sim/ws/devel
-src/systems/digit/cmd.py
+/Manifest.toml 
+src/systems/digit
+examples/digit_eg.jl
+examples/digitStandingtrler_eg.jl

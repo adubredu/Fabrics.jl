@@ -9,10 +9,12 @@ Kd = 0.5
 -0.11315409281838432, -0.15050988058637318, 1.0921200187801636, 0.00017832526659170586, 
 -0.13909131109654943, 0.15051467427633533, -1.0921631619898227, -0.00017832526659170586, 0.13910089847647372]
 
+θrefs[1] = -0.5
+θrefs[7] = -0.5
+
 
 init_digit_server()
 Damping = 2
-
 while true
     obs = get_observation()
     θ = collect(obs.motor_position)
@@ -29,3 +31,9 @@ while true
 end
         
 
+#=
+torso pitch limits 
+    [0.7, -0.7] l r : backward
+torso roll limits 
+    same polarities: foot moves instead of torso
+=#

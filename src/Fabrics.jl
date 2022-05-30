@@ -8,7 +8,10 @@ using StaticArrays
 using Colors
 using PyCall
 using Dojo 
+# using Pkg
 ENV["PYTHON"]="/home/alphonsus/anaconda3/envs/digit/bin/python"
+# Pkg.build("PyCall")
+
 include("systems/point_mass/types.jl")
 include("systems/point_mass/visualize.jl")
 include("systems/point_mass/step.jl")
@@ -24,11 +27,11 @@ include("systems/picklerick/visualize.jl")
 include("systems/picklerick/step.jl")
 include("systems/picklerick/fabric.jl")
 
-include("systems/digit/types.jl")
-include("systems/digit/visualize.jl")
-include("systems/digit/step.jl")
-include("systems/digit/fabric.jl")
-include("systems/digit/visualization/initialize.jl")
+# include("systems/digit/types.jl")
+# include("systems/digit/visualize.jl")
+# include("systems/digit/step.jl")
+# include("systems/digit/fabric.jl")
+# include("systems/digit/visualization/initialize.jl")
 
 export visualize_system!,
        step!,
@@ -45,13 +48,13 @@ export PlanarArm,
 export PickleRick,
        picklerick_fabric_solve
 
-export Digit, 
-       digit_fabric_solve,
-       init_digit_server,
-       get_observation,
-       send_command,
-       mirror_joint_configurations!,
-       get_digit,
-       initialize_digit!
+# export Digit, 
+#        digit_fabric_solve,
+#        init_digit_server,
+#        get_observation,
+#        send_command,
+#        mirror_joint_configurations!,
+#        get_digit,
+#        initialize_digit!
 
 end

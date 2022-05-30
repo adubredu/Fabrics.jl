@@ -1,8 +1,10 @@
-using PyCall
+# using PyCall
+# pyimport("rospy")
 py"""
 import time 
 import sys 
 sys.path.append("src/systems/digit/sim/ws/devel/lib/python2.7/dist-packages")
+sys.path.append("/opt/ros/melodic/lib/python2.7/dist-packages")
 import rospy
 from digit_msgs.msg import Digit_Observation, Digit_Commands
 from digit_msgs.srv import *
@@ -51,6 +53,7 @@ class BasicClient(WebSocketClient):
 
 function init_digit_server()
     py"""
+    import rospy
     rospy.init_node("comms")
     """
 end
@@ -184,12 +187,12 @@ end
 #     sleep(1.0/300.0)
 # end
 
-ws = connect()
-create_obstacle(ws)
-current_pose = [1.0, 0.15, 1.4]
-for i=1:5000
-    move_obstacle(ws, current_pose)
-    sleep(0.001)
-end
-println("Done")
+# ws = connect()
+# create_obstacle(ws)
+# current_pose = [1.0, 0.15, 1.4]
+# for i=1:5000
+#     move_obstacle(ws, current_pose)
+#     sleep(0.001)
+# end
+# println("Done")
 
