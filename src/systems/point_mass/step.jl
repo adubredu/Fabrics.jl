@@ -19,7 +19,7 @@ end
 function move_obstacles!(env::PointMass) 
     for ob in env.obs_o
         val = collect(ob.val)
-        val[2] -= 0.017
+        val[2] -= env.obstacle_speed
         ob[] = SVector(val...)
         if ob[][2] < -10.0
             val[2] = 10

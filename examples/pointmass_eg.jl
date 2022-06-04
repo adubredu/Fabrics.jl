@@ -12,15 +12,16 @@ r = 0.5
 env = PointMass(x, ẋ, r, O, or, g)
 env.show_tail = true
 env.dynamic = true
+env.obstacle_speed = 0.017 #17 mm/sec
 ax, fig = visualize_system!(env)
+horizon = 10000
 
-
-for i=1:10000
+for i=1:horizon
     global x, ẋ
     if env.dynamic move_obstacles!(env) end
     ẍ = pointmass_fabric_solve(x, ẋ, env)
     step!(ẍ, env)
     x = env.x
     ẋ = env.ẋ
-    sleep(0.0001*env.Δt)
+    sleep(env.Δt/horizon)
 end
