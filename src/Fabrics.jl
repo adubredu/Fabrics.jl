@@ -39,7 +39,8 @@ export visualize_system!,
        compute_COM
 
 export PointMass,
-       pointmass_fabric_solve
+       pointmass_fabric_solve,
+       move_obstacles!
 
 export PlanarArm,
        link_poses,

@@ -8,14 +8,19 @@ function attractor_task_map(θ, env::PointMass)
 end
 
 function repeller_task_map(θ, env::PointMass)
-    o = env.o
-    r = env.r 
-    x = (norm(θ - o)/r) - 1.0
-    return [x]
+    os = env.obs_o
+    xs = []
+    for (i, o) in enumerate(os)
+        r = 0.5*env.or[i]
+        o = o.val
+        x = (norm(θ - o)/r) - 1.0
+        push!(xs, x)
+    end
+    return xs
 end
 
 function attractor_fabric(x, ẋ, env::PointMass)
-    k = 10.0; αᵩ = 10.0; β=2.5
+    k = 150.0; αᵩ = 10.0; β=10.5
     m₊ = 2.0; m₋ = 0.2; αₘ = 0.75
     ψ(θ) = k * (norm(θ) + (1/αᵩ)*log(1+exp(-2αᵩ*norm(θ))))
     δx = ForwardDiff.gradient(ψ, x)
@@ -25,14 +30,14 @@ function attractor_fabric(x, ẋ, env::PointMass)
 end
 
 function repeller_fabric(x, ẋ, env::PointMass)
-    kᵦ = 50; αᵦ = 1 
-    s = ẋ[1] < 0 ? 1 : 0
-    M = (s*kᵦ) / (x[1]^2)
-    ψ(θ) = αᵦ / (2θ^8)
-    δx = ForwardDiff.derivative(ψ, x[1])
-    ẍ = -s * ẋ[1]^2 * δx
-    # @show (M, [ẍ])
-    return (M, [ẍ])
+    kᵦ = 75; αᵦ = 50.0 
+    s = [v < 0 ? 1.0 : 0.0 for v in ẋ]
+    M = diagm((s.*kᵦ) ./ (x.^2))
+    ψ(θ) = αᵦ ./ (2*θ.^8)
+    x = convert(Vector{Float64}, x)
+    δx = ForwardDiff.jacobian(ψ, x)
+    ẍ = vec((-s .* ẋ.^2)' * δx)
+    return (M, ẍ)
 end
 
 function fabric_eval(x, ẋ, name::Symbol, env::PointMass)
