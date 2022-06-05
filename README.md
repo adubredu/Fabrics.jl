@@ -100,6 +100,10 @@ path = pathof(Fabrics)
 include(joinpath(path, "examples/planararm_eg.jl))
 ```
 
+You should see the visualization below:
+![](media/2dof_arm.gif)
+
+
 To run the PickleRick example, go back to your Julia REPL, activate the environment where you installed this packagage and run the following commands:
 
 ```
