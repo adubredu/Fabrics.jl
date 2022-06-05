@@ -18,7 +18,7 @@ To run an example as it is, go back to your Julia REPL, activate the environment
 ```
 using Fabrics
 path = pathof(Fabrics)
-include(joinpath(path, "examples/<example script filename>))
+include(joinpath(path, "examples/<example script filename>"))
 ```
 
 To alter certain parameters of the dynamical system, you'll have to create a new Julia script, copy the specific example code and alter the parameters as you see fit. Note that before you run the Julia script, you should activate the Julia environment where you installed this package.
