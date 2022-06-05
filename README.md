@@ -1,5 +1,7 @@
 # Fabrics.jl
 
+![](media/fabrics.gif)
+
 Julia implementation of [Geometric Fabrics for the Acceleration-based Design of Robotic Motion](https://arxiv.org/abs/2010.14750).
 
 ## Installation
