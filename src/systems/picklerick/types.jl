@@ -10,6 +10,8 @@ mutable struct PickleRick
     dynamic::Bool 
     trail::Bool
     show_contacts::Bool 
+    show_com::Bool 
+    show_support_polygon::Bool
     l0::Float64
     l1::Float64 
     l2::Float64 
@@ -37,6 +39,6 @@ mutable struct PickleRick
         m_links = 0.05 #kg
         m_head = 0.1 #kg
 
-        new(obstacle_positions, obstacle_radii, joint_positions, joint_velocities, nothing, nothing, nothing, nothing, false, false, false, 0.75, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, goal_position, task_maps, θᵣ, time_step, m_links, m_head, nothing)
+        new(obstacle_positions, obstacle_radii, joint_positions, joint_velocities, nothing, nothing, nothing, nothing, false, false, false, false, false, 0.75, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5, goal_position, task_maps, θᵣ, time_step, m_links, m_head, nothing)
     end
 end

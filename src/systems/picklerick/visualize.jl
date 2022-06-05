@@ -121,17 +121,21 @@ function visualize_system!(env::PickleRick)
     scatter!(ax, chain4; marker=:circle, color=:black, markersize=0.2, markerspace=SceneSpace)
     scatter!(ax, chain5; marker=:circle, color=:black, markersize=0.2, markerspace=SceneSpace)
     scatter!(ax, head; marker=:circle, color=:black, markersize=0.6, markerspace=SceneSpace)
-    # og = SVector{2,Float64}(goal_position...)  
-    # scatter!(ax, og; marker=:rect, markersize=0.5, markerspace=SceneSpace, color=:green)
+     
+    ocom = nothing
+    if env.show_com
+        com = compute_COM(θ, env)
+        ocom = Observable(SVector{2, Float64}(com...))
+        # proj = Observable([SVector{2, Float64}(com...), SVector{2, Float64}(com[1], 0.0)])
+        # lines!(ax, proj; linewidth=5, color=:black)
+        scatter!(ax, ocom; marker=:circle, markersize=0.5, markerspace=SceneSpace, color=:red)
+    end
 
-    com = compute_COM(θ, env)
-    ocom = Observable(SVector{2, Float64}(com...))
-    # proj = Observable([SVector{2, Float64}(com...), SVector{2, Float64}(com[1], 0.0)])
-    scatter!(ax, ocom; marker=:circle, markersize=0.5, markerspace=SceneSpace, color=:red)
-    c = to_color(:grey)
-    col = RGBA(c.r, c.g, c.b, 0.5)
-    lines!(ax, [-env.w, env.w], [0, 0]; linewidth=5, color=col)
-    # lines!(ax, proj; linewidth=5, color=:black)
+    if env.show_support_polygon
+        c = to_color(:grey)
+        col = RGBA(c.r, c.g, c.b, 0.5) 
+        lines!(ax, [-env.w, env.w], [0, 0]; linewidth=5, color=col)
+    end
 
     env.body_observables = [chain1, chain2, chain3, chain4, chain5, head]
     env.obstacle_observables = obstacle_observables 

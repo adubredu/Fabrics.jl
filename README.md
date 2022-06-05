@@ -116,3 +116,17 @@ include(joinpath(path, "examples/multiplanararm_eg.jl"))
 
 You should see the visualization below:
 ![](media/10dof_arm.gif)
+
+
+### PickleRick Bullet-Dodging Fabric
+To run the PickleRick Bullet-Dodging Fabric example, go back to your Julia- REPL, activate the environment where you installed this packagage and run the following commands:
+
+```
+using Fabrics
+path = pathof(Fabrics)
+include(joinpath(path, "examples/picklerick_eg.jl"))
+```
+
+You should see the visualization below:
+![](media/picklerick.gif)
+
