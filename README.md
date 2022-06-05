@@ -5,7 +5,7 @@ Julia implementation of [Geometric Fabrics for the Acceleration-based Design of 
 ## Installation
 1. Open your Julia REPL by typing  `julia` in your terminal.
 2. Press `]` on your keyboard to enter the package manager
-3. Enter command `add https://github.com/adubredu/Fabrics.jl` and press 
+3. Enter command `add https://github.com/adubredu/Fabrics.jl"` and press 
 `Enter` on your keyboard to install this package.
 4. Press the `Backspace` key on your keyboard to return to the REPL
 
@@ -23,6 +23,7 @@ include(joinpath(path, "examples/<example script filename>))
 
 To alter certain parameters of the dynamical system, you'll have to create a new Julia script, copy the specific example code and alter the parameters as you see fit. Note that before you run the Julia script, you should activate the Julia environment where you installed this package.
 
+### Point Mass Navigator fabric
 Here's an example script to run the Point Mass navigator fabric :
 
 ```julia
@@ -91,23 +92,27 @@ You should see a Makie visualization below:
 
 ![](media/nav_dynamic.gif)
 
-
-To run the Planar Arm example, go back to your Julia REPL, activate the environment where you installed this packagage and run the following commands:
+### 2-DOF Planar Arm Fabric
+To run the 2 Dof Planar Arm example, go back to your Julia REPL, activate the environment where you installed this packagage and run the following commands:
 
 ```
 using Fabrics
 path = pathof(Fabrics)
-include(joinpath(path, "examples/planararm_eg.jl))
+include(joinpath(path, "examples/planararm_eg.jl"))
 ```
 
 You should see the visualization below:
 ![](media/2dof_arm.gif)
 
 
-To run the PickleRick example, go back to your Julia REPL, activate the environment where you installed this packagage and run the following commands:
+### 10-DOF Planar Arm Fabric
+To run the 10 Dof Planar Arm example, go back to your Julia REPL, activate the environment where you installed this packagage and run the following commands:
 
 ```
 using Fabrics
 path = pathof(Fabrics)
-include(joinpath(path, "examples/picklerick_eg.jl))
+include(joinpath(path, "examples/multiplanararm_eg.jl"))
 ```
+
+You should see the visualization below:
+![](media/10dof_arm.gif)

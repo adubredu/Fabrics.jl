@@ -1,38 +1,27 @@
-function attractor_task_map(θ, env::PlanarArm)
+function attractor_task_map(θ, env::MultiPlanarArm)
     x₉ = env.g
-    _, x = link_poses(θ, env)
+    _,_,_,_,_,_,_,_,_, x = link_poses(θ, env)
     return x - x₉
 end
 
-function repeller_task_map(θ, env::PlanarArm)
+function repeller_task_map(θ, env::MultiPlanarArm)
     # os = env.o
     os = env.obstacle_observables
-    rs = env.r 
-    x1, x2 = link_poses(θ, env) 
+    rs = 0.75*env.r 
+    x1, x2, x3, x4, x5, x6, x7, x8, x9, x10 = link_poses(θ, env) 
     xs = []
-    for x in [x1, x2]
-        for (o,r) in zip(os, rs)
+    for x in [x1, x2, x3, x4, x5, x6, x7, x8, x9, x10]
+        for (o,r) in zip(os, rs) 
             Δ =  (norm(x - o.val)/r)[1] - 1.0
             push!(xs, Δ)
         end
     end
     return xs
 end
+ 
 
-function joint_lower_limit_task_map(θ, env::PlanarArm)
-    return θ-env.lb
-end
-
-function joint_upper_limit_task_map(θ, env::PlanarArm)
-    return env.ub-θ
-end
-
-function default_config_task_map(θ, env::PlanarArm)
-    return θ - env.θ₀
-end
-
-function attractor_fabric(x, ẋ, env::PlanarArm)
-    k = 50.0; αᵩ = 10.0; β=2.5
+function attractor_fabric(x, ẋ, env::MultiPlanarArm)
+    k = 100.0; αᵩ = 10.0; β=20.5
     m₊ = 2.0; m₋ = 0.2; αₘ = 0.75
     ψ(θ) = k * (norm(θ) + (1/αᵩ)*log(1+exp(-2αᵩ*norm(θ))))
     δx = ForwardDiff.gradient(ψ, x)
@@ -41,8 +30,8 @@ function attractor_fabric(x, ẋ, env::PlanarArm)
     return (M, ẍ)
 end
 
-function repeller_fabric(x, ẋ, env::PlanarArm)
-    kᵦ = 20; αᵦ = 200.0 
+function repeller_fabric(x, ẋ, env::MultiPlanarArm)
+    kᵦ = 0.2; αᵦ = 0.1 
     s = [v < 0 ? 1.0 : 0.0 for v in ẋ]
     M = diagm((s.*kᵦ) ./ (x.^2))
     ψ(θ) = αᵦ ./ (2θ.^8) 
@@ -52,42 +41,8 @@ function repeller_fabric(x, ẋ, env::PlanarArm)
     return (M, ẍ)
 end
 
-function joint_lower_limit_fabric(x, ẋ, env::PlanarArm)
-    λ = 0.25
-    α₁ = 0.4; α₂ = 0.2; α₃ = 20; α₄ = 5.0
-    s = zero(ẋ)
-    for i=1:length(s) s[i] = ẋ[i] < 0.0 ? 1 : 0 end
-    M = diagm(s.*(λ./x))
-    ψ(θ) = (α₁./(θ.^2)) .+ α₂*log.(exp.(-α₃*(θ.-α₄)) .+ 1) 
-    δx = ForwardDiff.jacobian(ψ, x) 
-    ẍ = δx* (-s .* norm(ẋ)^2)
-    ẍ = vec(ẍ) 
-    return (M, ẍ)
-end
 
-function joint_upper_limit_fabric(x, ẋ, env::PlanarArm)
-    λ = 0.25
-    α₁ = 0.4; α₂ = 0.2; α₃ = 20; α₄ = 5.0
-    s = zero(ẋ)
-    for i=1:length(s) s[i] = ẋ[i] < 0.0 ? 1 : 0 end
-    M = diagm(s.*(λ./x))
-    ψ(θ) = (α₁./(θ.^2)) .+ α₂*log.(exp.(-α₃*(θ.-α₄)) .+ 1) 
-    δx = ForwardDiff.jacobian(ψ, x) 
-    ẍ = δx* (-s .* norm(ẋ)^2)
-    ẍ = vec(ẍ) 
-    return (M, ẍ)
-end
-
-function default_config_fabric(x, ẋ, env::PlanarArm)
-    λᵪ = 0.25; k = 50.0; αᵩ = 10.0; β=2.5
-    M = λᵪ * I(length(x))
-    ψ(θ) = k * (norm(θ) + (1/αᵩ)*log(1+exp(-2αᵩ*norm(θ))))
-    δx = ForwardDiff.gradient(ψ, x)
-    ẍ = -δx - β*ẋ
-    return (M, ẍ)
-end
-
-function fabric_eval(x, ẋ, name::Symbol, env::PlanarArm)
+function fabric_eval(x, ẋ, name::Symbol, env::MultiPlanarArm)
     M = nothing; ẍ = nothing 
     fabricname = Symbol(name, :_fabric)
     ϕ = eval(fabricname)
@@ -95,7 +50,7 @@ function fabric_eval(x, ẋ, name::Symbol, env::PlanarArm)
     return (M, ẍ)
 end
 
-function planararm_fabric_solve(θ, θ̇ , env::PlanarArm)
+function multiplanar_arm_fabric_solve(θ, θ̇ , env::MultiPlanarArm)
     xₛ = []; ẋₛ = []; cₛ = []
     Mₛ = []; ẍₛ = []; Jₛ = []
     for t in env.task_maps
