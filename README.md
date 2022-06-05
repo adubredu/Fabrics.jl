@@ -1,6 +1,5 @@
 # Fabrics.jl
 
-<!-- ![](media/fabrics.gif =800x600) -->
 <img src="media/fabrics.gif" width="200" height="180" />
 
 Julia implementation of [Geometric Fabrics for the Acceleration-based Design of Robotic Motion](https://arxiv.org/abs/2010.14750).
