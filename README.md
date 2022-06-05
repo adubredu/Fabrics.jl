@@ -57,7 +57,7 @@ You should see a Makie visualization below:
 
 ![](media/nav_static.gif)
 
-To make the obstacles dynamic, change the `env.dynamic` parameter to true as in this script below. I use a different initial obstacle positions to make things interesting:
+To make the obstacles dynamic, change the `env.dynamic` parameter to true as in this script below. I use different initial obstacle positions to make things interesting:
 
 ```julia
 using Fabrics

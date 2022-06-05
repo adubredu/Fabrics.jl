@@ -1,6 +1,6 @@
 function attractor_task_map(θ, env::PlanarArm)
     x₉ = env.g
-    _,_,x = link_poses(θ, env)
+    _, x = link_poses(θ, env)
     return x - x₉
 end
 
@@ -8,11 +8,13 @@ function repeller_task_map(θ, env::PlanarArm)
     # os = env.o
     os = env.obstacle_observables
     rs = env.r 
-    _,_,x = link_poses(θ, env) 
+    x1, x2 = link_poses(θ, env) 
     xs = []
-    for (o,r) in zip(os, rs)
-        Δ =  (norm(x - o.val)/r)[1] - 1.0
-        push!(xs, Δ)
+    for x in [x1, x2]
+        for (o,r) in zip(os, rs)
+            Δ =  (norm(x - o.val)/r)[1] - 1.0
+            push!(xs, Δ)
+        end
     end
     return xs
 end
@@ -40,15 +42,13 @@ function attractor_fabric(x, ẋ, env::PlanarArm)
 end
 
 function repeller_fabric(x, ẋ, env::PlanarArm)
-    kᵦ = 50; αᵦ = 1.0 
-    s = zero(ẋ)
-    for i=1:length(s) s[i] = ẋ[i] < 0.0 ? 1 : 0 end
-    M = diagm((s*kᵦ) ./ (x.^2))
+    kᵦ = 20; αᵦ = 200.0 
+    s = [v < 0 ? 1.0 : 0.0 for v in ẋ]
+    M = diagm((s.*kᵦ) ./ (x.^2))
     ψ(θ) = αᵦ ./ (2θ.^8) 
     x = convert(Vector{Float64}, x)
     δx = ForwardDiff.jacobian(ψ, x) 
-    ẍ = -s .* norm(ẋ)^2 .* δx  
-    ẍ = vec(ẍ)
+    ẍ = vec((-s .* ẋ.^2)' * δx)   
     return (M, ẍ)
 end
 
