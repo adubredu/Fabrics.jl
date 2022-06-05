@@ -56,7 +56,7 @@ for i=1:horizon
 end
 ```
 
-You should see a Makie visualization below:
+You should see the visualization below:
 
 ![](media/nav_static.gif)
 
@@ -90,7 +90,7 @@ for i=1:horizon
 end
 ```
 
-You should see a Makie visualization below:
+You should see the visualization below:
 
 ![](media/nav_dynamic.gif)
 
