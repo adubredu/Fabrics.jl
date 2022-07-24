@@ -20,11 +20,11 @@ function repeller_task_map(θ, env::PointMass)
 end
 
 function attractor_fabric(x, ẋ, env::PointMass)
-    k = 150.0; αᵩ = 10.0; β=10.5
+    k = 150.0; αᵩ = 10; β=100.5; K=10
     m₊ = 2.0; m₋ = 0.2; αₘ = 0.75
     ψ(θ) = k * (norm(θ) + (1/αᵩ)*log(1+exp(-2αᵩ*norm(θ))))
     δx = ForwardDiff.gradient(ψ, x)
-    ẍ = -δx - β*ẋ
+    ẍ = -K*δx - β*ẋ
     M = (m₊ - m₋) * exp(-(αₘ*norm(x))^2) * I(2) + m₋*I(2)
     return (M, ẍ)
 end
@@ -48,6 +48,13 @@ function fabric_eval(x, ẋ, name::Symbol, env::PointMass)
     return (M, ẍ)
 end
 
+function energize(ẍ, M, env::PointMass; ϵ=1e-1)
+    ẋ = env.ẋ + ẍ*env.Δt 
+    ẋ = ẋ/(norm(ẋ)) 
+    ẍₑ = (I(size(M)[1]) - ϵ*ẋ*ẋ')*ẍ
+    return ẍₑ
+end
+
 function pointmass_fabric_solve(θ, θ̇ , env::PointMass)
     xₛ = []; ẋₛ = []; cₛ = []
     Mₛ = []; ẍₛ = []; Jₛ = []
@@ -57,7 +64,7 @@ function pointmass_fabric_solve(θ, θ̇ , env::PointMass)
         ẋ = jvp(σ->ψ(σ, env), θ, θ̇ )
         c = jvp(σ -> jvp(σ->ψ(σ, env), σ, θ̇  ), θ, θ̇ )
         J = ForwardDiff.jacobian(σ->ψ(σ, env), θ)
-        M, ẍ = fabric_eval(x, ẋ, t, env)
+        M, ẍ = fabric_eval(x, ẋ, t, env) 
         push!(xₛ, x); push!(ẋₛ, ẋ); push!(cₛ, c) 
         push!(Mₛ, M); push!(ẍₛ, ẍ); push!(Jₛ, J) 
     end   
@@ -65,45 +72,7 @@ function pointmass_fabric_solve(θ, θ̇ , env::PointMass)
     fᵣ = sum([J' * M * (ẍ - c) for (J, M, ẍ, c) in zip(Jₛ, Mₛ, ẍₛ, cₛ)])
     Mᵣ = convert(Matrix{Float64}, Mᵣ)
     ẍ = pinv(Mᵣ) * fᵣ 
+    ẍ = energize(ẍ, Mᵣ, env)
     return ẍ 
 end
 
-# function task_map(θ, env::PointMass)
-#     θ₀ = env.o
-#     r = env.r
-#     ϕ = (norm(θ-θ₀)-r)/r 
-#     return ϕ
-# end
-
-# function potential(θ, env::PointMass)
-#     k = env.k
-#     ϕ(q) = task_map(q, env)
-#     ψ = k/(ϕ(θ)^2)
-#     return ψ
-# end
-
-# function geometry_fabric(θ, θ̇ , env::PointMass)
-#     λ = env.λ
-#     f(q) = potential(q, env)
-#     @show f(θ)
-#     δ₀ = ForwardDiff.gradient(f, θ)
-#     ẍ = -λ * norm(θ̇ )^2 * δ₀
-#     return ẍ
-# end
-
-# function finsler_fabric(θ, θ̇ , env::PointMass)
-#     λ = env.λ
-#     ψ(q) = potential(q, env)
-#     δ₀ = ForwardDiff.gradient(ψ, θ)
-#     ϕ(q) = [task_map(q, env)]
-#     J = ForwardDiff.jacobian(ϕ, θ) 
-#     Lₑ = (1/(2*ϕ(θ)[1]^2)) * (J * θ̇ ).^2
-#     ẍ = -λ * Lₑ .* δ₀
-#     return ẍ
-
-# end
-
-# function pointmass_fabric(θ, θ̇ , env::PointMass)
-#     ẍ = geometry_fabric(θ, θ̇ , env)
-#     return ẍ
-# end
