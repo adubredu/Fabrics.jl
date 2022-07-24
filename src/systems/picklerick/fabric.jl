@@ -125,6 +125,13 @@ function fabric_eval(x, ẋ, name::Symbol, env::PickleRick)
     return (M, ẍ)
 end
 
+function energize(ẍ, M, env::PickleRick; ϵ=1e-1)
+    ẋ = env.θ̇  + ẍ*env.Δt 
+    ẋ = ẋ/(norm(ẋ)) 
+    ẍₑ = (I(size(M)[1]) - ϵ*ẋ*ẋ')*ẍ
+    return ẍₑ
+end
+
 function picklerick_fabric_solve(θ, θ̇ , env::PickleRick)
     xₛ = []; ẋₛ = []; cₛ = []
     Mₛ = []; ẍₛ = []; Jₛ = []
@@ -142,5 +149,6 @@ function picklerick_fabric_solve(θ, θ̇ , env::PickleRick)
     fᵣ = sum([J' * M * (ẍ - c) for (J, M, ẍ, c) in zip(Jₛ, Mₛ, ẍₛ, cₛ)])
     Mᵣ = convert(Matrix{Float64}, Mᵣ)
     ẍ = pinv(Mᵣ) * fᵣ 
+    ẍ =  energize(ẍ, Mᵣ, env)
     return ẍ 
 end

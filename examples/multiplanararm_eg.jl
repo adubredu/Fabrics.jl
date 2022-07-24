@@ -16,7 +16,7 @@ env.dynamic = false
 
 θ = init_joint_positions
 θ̇ = zero(θ)
-horizon = 10000
+horizon = 20000
 
 for i=1:horizon
     global θ, θ̇

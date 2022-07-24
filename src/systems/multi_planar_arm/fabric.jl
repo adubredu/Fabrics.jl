@@ -21,11 +21,11 @@ end
  
 
 function attractor_fabric(x, ẋ, env::MultiPlanarArm)
-    k = 100.0; αᵩ = 10.0; β=20.5
+    k = 100.0; αᵩ = 10.0; β=20.5; K=1.0
     m₊ = 2.0; m₋ = 0.2; αₘ = 0.75
     ψ(θ) = k * (norm(θ) + (1/αᵩ)*log(1+exp(-2αᵩ*norm(θ))))
     δx = ForwardDiff.gradient(ψ, x)
-    ẍ = -δx - β*ẋ
+    ẍ = -K*δx - β*ẋ
     M = (m₊ - m₋) * exp(-(αₘ*norm(x))^2) * I(2) + m₋*I(2)
     return (M, ẍ)
 end
@@ -50,6 +50,14 @@ function fabric_eval(x, ẋ, name::Symbol, env::MultiPlanarArm)
     return (M, ẍ)
 end
 
+function energize(ẍ, M, env::MultiPlanarArm; ϵ=1e-10)
+    ẋ = env.θ̇  + ẍ*env.Δt 
+    ẋ = ẋ/(norm(ẋ)) 
+    ẍₑ = (I(size(M)[1]) - ϵ*ẋ*ẋ')*ẍ
+    return ẍₑ
+end
+
+
 function multiplanar_arm_fabric_solve(θ, θ̇ , env::MultiPlanarArm)
     xₛ = []; ẋₛ = []; cₛ = []
     Mₛ = []; ẍₛ = []; Jₛ = []
@@ -67,5 +75,6 @@ function multiplanar_arm_fabric_solve(θ, θ̇ , env::MultiPlanarArm)
     fᵣ = sum([J' * M * (ẍ - c) for (J, M, ẍ, c) in zip(Jₛ, Mₛ, ẍₛ, cₛ)])
     Mᵣ = convert(Matrix{Float64}, Mᵣ)
     ẍ = pinv(Mᵣ) * fᵣ 
+    ẍ =  energize(ẍ, Mᵣ, env)
     return ẍ 
 end
