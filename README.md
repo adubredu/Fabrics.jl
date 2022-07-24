@@ -20,7 +20,7 @@ To run an example as it is, go back to your Julia REPL, activate the environment
 ```
 using Fabrics
 path = pathof(Fabrics)
-include(joinpath(path, "examples/<example script filename>"))
+include(joinpath(path, "../../examples/<example script filename>"))
 ```
 
 To alter certain parameters of the dynamical system, you'll have to create a new Julia script, copy the specific example code and alter the parameters as you see fit. Note that before you run the Julia script, you should activate the Julia environment where you installed this package.
@@ -56,7 +56,7 @@ for i=1:horizon
 end
 ```
 
-You should see a Makie visualization below:
+You should see the visualization below:
 
 ![](media/nav_static.gif)
 
@@ -90,7 +90,7 @@ for i=1:horizon
 end
 ```
 
-You should see a Makie visualization below:
+You should see the visualization below:
 
 ![](media/nav_dynamic.gif)
 
@@ -100,7 +100,7 @@ To run the 2 Dof Planar Arm example, go back to your Julia REPL, activate the en
 ```
 using Fabrics
 path = pathof(Fabrics)
-include(joinpath(path, "examples/planararm_eg.jl"))
+include(joinpath(path, "../../examples/planararm_eg.jl"))
 ```
 
 You should see the visualization below:
@@ -113,7 +113,7 @@ To run the 10 Dof Planar Arm example, go back to your Julia REPL, activate the e
 ```
 using Fabrics
 path = pathof(Fabrics)
-include(joinpath(path, "examples/multiplanararm_eg.jl"))
+include(joinpath(path, "../../examples/multiplanararm_eg.jl"))
 ```
 
 You should see the visualization below:
@@ -126,7 +126,7 @@ To run the PickleRick Bullet-Dodging Fabric example, go back to your Julia- REPL
 ```
 using Fabrics
 path = pathof(Fabrics)
-include(joinpath(path, "examples/picklerick_eg.jl"))
+include(joinpath(path, "../../examples/picklerick_eg.jl"))
 ```
 
 You should see the visualization below:
