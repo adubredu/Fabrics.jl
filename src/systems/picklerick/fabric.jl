@@ -95,7 +95,7 @@ function lbalance_fabric(x, ẋ, env::PickleRick)
     λ = 0.25
     α₁ = 0.4; α₂ = 0.2; α₃ = 20; α₄ = 5.0
     s = zero(ẋ)
-    for i=1:length(s) s[i] = ẋ[i] < 0.0 ? 1 : 0 end
+    for i in eachindex(s) s[i] = ẋ[i] < 0.0 ? 1 : 0 end
     M = diagm(s.*(λ./x))
     ψ(θ) = (α₁./(θ.^2)) .+ α₂*log.(exp.(-α₃*(θ.-α₄)) .+ 1) 
     δx = ForwardDiff.jacobian(ψ, x) 
@@ -108,7 +108,7 @@ function rbalance_fabric(x, ẋ, env::PickleRick)
     λ = 0.25
     α₁ = 0.4; α₂ = 0.2; α₃ = 20; α₄ = 5.0
     s = zero(ẋ)
-    for i=1:length(s) s[i] = ẋ[i] < 0.0 ? 1 : 0 end
+    for i in eachindex(s) s[i] = ẋ[i] < 0.0 ? 1 : 0 end
     M = diagm(s.*(λ./x))
     ψ(θ) = (α₁./(θ.^2)) .+ α₂*log.(exp.(-α₃*(θ.-α₄)) .+ 1) 
     δx = ForwardDiff.jacobian(ψ, x) 

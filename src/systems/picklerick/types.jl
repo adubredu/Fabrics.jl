@@ -34,7 +34,7 @@ mutable struct PickleRick
 
     function PickleRick(obstacle_positions, obstacle_radii, joint_positions, joint_velocities, goal_position)
         time_step = 10E-4
-        task_maps = [:repeller, :default_config, :lbalance, :rbalance]#, :lefthand_attractor]
+        task_maps = [:default_config, :repeller, :lbalance, :rbalance]#, :lefthand_attractor]
         θᵣ = [π/2, 2π/3, π/6, 2π/3, π/6, π/2, π/3, 7π/12, 2π/3, 5π/12]
         m_links = 0.05 #kg
         m_head = 0.1 #kg
