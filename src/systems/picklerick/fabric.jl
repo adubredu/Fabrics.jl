@@ -6,7 +6,7 @@ function repeller_task_map(θ, env::PickleRick)
     lh = chains[5][end]; rh = chains[4][end]
     lf = chains[1][end]; rf = chains[2][end]
     hd = chains[3][end]; nk = chains[6][1]
-    kp = [lh, rh, hd, nk]#[hd, lh, rh, lf, rf]
+    kp = [lh, rh, hd, nk]
     for k in kp 
         Δ = (norm(k - o.val)/r)[1] - 1.0
         push!(xs, Δ)
@@ -48,20 +48,19 @@ function repeller_fabric(x, ẋ, env::PickleRick)
     for i=1:length(s) s[i] = ẋ[i] < 0.0 ? 1 : 0 end
     M = diagm((s*kᵦ) ./ (x.^2))
     ψ(θ) = αᵦ ./ (2θ.^8) 
-    x = convert(Vector{Float64}, x)
-    # @show size(x)
-    δx = ForwardDiff.jacobian(ψ, x) 
-    # @show (δx)
+    x = convert(Vector{Float64}, x) 
+    δx = ForwardDiff.jacobian(ψ, x)  
     δx = diag(δx)
     ẍ = -s .* norm(ẋ)^2 .* δx  
-    ẍ = vec(ẍ)
-    # @show size(ẍ)
+    ẍ = vec(ẍ) 
     return (M, ẍ)
 end
 
-#dance: 1000 2.5
-#stable dodge: 1500 20.5
-#reach: 300 5.5 | 30 50.5
+#=
+ dance: 1000 2.5
+ stable dodge: 1500 20.5
+reach: 300 5.5 | 30 50.5
+=#
 function default_config_fabric(x, ẋ, env::PickleRick) 
     λᵪ = 0.25; k = 1500.0; αᵩ = 10.0; β=20.5
     M = λᵪ * I(length(x))
