@@ -104,6 +104,7 @@ include(joinpath(path, "../../examples/planararm_eg.jl"))
 ```
 
 You should see the visualization below:
+
 ![](media/2dof_arm.gif)
 
 
@@ -117,6 +118,7 @@ include(joinpath(path, "../../examples/multiplanararm_eg.jl"))
 ```
 
 You should see the visualization below:
+
 ![](media/10dof_arm.gif)
 
 
@@ -130,5 +132,6 @@ include(joinpath(path, "../../examples/picklerick_eg.jl"))
 ```
 
 You should see the visualization below:
+
 ![](media/picklerick.gif)
 
